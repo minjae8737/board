@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link th:href="@{/css/bootstrap.min.css}"
+          href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+
+<body>
+<style>
+    /* 추가된 사용자 정의 스타일 */
+    .readonly-field {
+        background-color: #ffffff;
+    }
+</style>
+
+<div class="container" style="max-width: 600px">
+    <div class="py-5 text-center">
+        <h2>글 내용</h2>
+    </div>
+
+    <div class="mb-3">
+        <label for="title">제목</label>
+        <input type="text" id="title" class="form-control" th:value="${board.title}" readonly>
+    </div>
+
+    <hr class="my-3">
+
+    <div class="mb-3">
+        <textarea id="content" style="resize: none" class="form-control" th:text="${board.content}" rows="8" readonly></textarea>
+    </div>
+
+    <hr class="my-3">
+
+    <div>
+        <button class="w-25 btn btn-primary btn-lg"
+                onclick="location.href='editboard.html'"
+                th:onclick="|location.href='@{/board/edit/{boardId}(boardId=${board.id})}'|"
+        >
+            수정하기
+        </button>
+        <button class="w-25 btn btn-secondary btn-lg float-end"
+                onclick="location.href='board.html'"
+                th:onclick="|location.href='@{/board}'|"
+        >
+            목록으로
+        </button>
+    </div>
+</div>
+
+</body>
+</html>

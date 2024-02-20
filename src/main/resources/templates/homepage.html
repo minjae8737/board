@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link th:href="@{/css/bootstrap.min.css}"
+          href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="py-5 text-center">
+    <h2>메인 화면</h2>
+</div>
+
+<div th:each="boardname : ${boardList}">
+<!--  <h2 th:text="${board.name}"></h2>-->
+  <ul>
+    <li>
+      <a th:href="@{'/board/' + ${boardname}}" th:text="${boardname}">게시판 이름</a>
+    </li>
+  </ul>
+</div>
+
+
+</body>
+</html>
