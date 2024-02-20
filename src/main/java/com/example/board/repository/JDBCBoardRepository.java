@@ -43,7 +43,7 @@ public class JDBCBoardRepository implements BoardRepository {
     public List<String> findBoardList() {
         String sql = "show tables";
 
-        List<Map<String,Object>> resultSet;
+        List<Map<String, Object>> resultSet;
 
         try {
             resultSet = jdbcTemplate.queryForList(sql);
@@ -63,7 +63,7 @@ public class JDBCBoardRepository implements BoardRepository {
     public Post save(Post post) {
         SqlParameterSource param = new BeanPropertySqlParameterSource(post);
         Number key = jdbcInsert.executeAndReturnKey(param);
-        post.setId(key.longValue());
+        post.setPostId(key.longValue());
         return post;
     }
 
@@ -95,23 +95,24 @@ public class JDBCBoardRepository implements BoardRepository {
     }
 
     public List<Post> findAll(String boardName) {
-        String sql = "select id, title, content, date, hits " +
-                "from :boardName";
+        String tableName = "board_" + boardName;
 
-        SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("boardName", "board_" + boardName);
+        String sql = "select post_id, post_title, post_content, post_date, post_hits " +
+                "from " + tableName;
 
         return template.query(sql, postRowMapper());
     }
 
     public List<Post> findBySearchWord(String boardName, PostSearchDto postSearchDto) {
+
+        String tableName = "board_" + boardName;
+
         String sql = "select id, title, content, date, hits " +
-                "from :boardName " +
+                "from " + tableName + " " +
                 "where ";
 
         SearchType searchType = postSearchDto.getSearchType();
         SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("boardName", "board_" + boardName)
                 .addValue("searchWord", postSearchDto.getSearchWord())
                 .addValue("searchType", postSearchDto.getSearchType());
 

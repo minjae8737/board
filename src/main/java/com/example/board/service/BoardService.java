@@ -32,8 +32,8 @@ public class BoardService {
     }
 
     public Post save(Post post) {
-        post.setHits(0);
-        post.setDate(LocalDateTime.now());
+        post.setPostHits(0);
+        post.setPostDate(LocalDateTime.now());
         return boardRepository.save(post);
     }
 
@@ -49,8 +49,10 @@ public class BoardService {
 
         List<Post> posts;
         if (postSearchDto.getSearchWord() == null) {
+            log.info("--------------------enter findAll()--------------------");
             posts = boardRepository.findAll(boardName);
         } else {
+            log.info("--------------------enter findBySearchWord()--------------------");
             posts = boardRepository.findBySearchWord(boardName,postSearchDto);
         }
         Collections.reverse(posts);

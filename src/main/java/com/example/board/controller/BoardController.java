@@ -26,9 +26,12 @@ public class BoardController {
 
     @GetMapping("/{boardName}")
     public String showPostList(@ModelAttribute(name = "postSearchDto") PostSearchDto postSearchDto,
+                               @ModelAttribute("boardName") String boardName,
                                @RequestParam(name = "currentPage", defaultValue = "0") long currentPage,
-                               @RequestParam("boardName") String boardName,
                                Model model) {
+
+        log.info("--------------------enter showPostList()--------------------");
+        log.info("boardName={}", boardName);
 
         int postSize = 5; // 한 페이지에 보여줄 post 개수
 
@@ -62,6 +65,8 @@ public class BoardController {
 
         return "boardmainpage";
     }
+
+
 
 
     private static int getStartPage(int currentPage) {
