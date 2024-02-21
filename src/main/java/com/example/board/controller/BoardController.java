@@ -7,10 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -30,9 +28,6 @@ public class BoardController {
                                @RequestParam(name = "currentPage", defaultValue = "0") long currentPage,
                                Model model) {
 
-        log.info("--------------------enter showPostList()--------------------");
-        log.info("boardName={}", boardName);
-
         int postSize = 5; // 한 페이지에 보여줄 post 개수
 
         List<Post> posts = boardService.findPosts(boardName, postSearchDto);
@@ -50,11 +45,6 @@ public class BoardController {
 
         posts = posts.subList(startBoardIndex, endBoardIndex);  //현재 page에 표시할 board 리스트
 
-//        log.info("boards[0].date={}", posts);
-//        log.info("totalPages={}", totalPages);
-//        log.info("startBoardIndex={} endBoardIndex={}", startBoardIndex, endBoardIndex);
-//        log.info("startPage={} endPage={}", startPage, endPage);
-
         model.addAttribute("posts", posts);
         model.addAttribute("boardName", boardName);
         model.addAttribute("currentPage", currentPage);
@@ -65,6 +55,20 @@ public class BoardController {
 
         return "boardmainpage";
     }
+
+    @GetMapping("/{boardName}/write")
+    public String showWritePostForm(@ModelAttribute("boardName") String boardName, Model model) {
+        model.addAttribute("boardName", boardName);
+        return "writepost";
+    }
+
+    @PostMapping("/{boardName}/write")
+    public String writePost(@ModelAttribute("boardName") String boardName, @ModelAttribute("post") Post post, RedirectAttributes redirectAttributes) {
+        Post savedPost = boardService.savePost(boardName, post);
+        redirectAttributes.addAttribute("postId", savedPost.getId());
+        return "redirect:/board/{boardName}";
+    }
+
 
 
 

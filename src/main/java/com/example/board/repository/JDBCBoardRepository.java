@@ -14,6 +14,8 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,14 +62,22 @@ public class JDBCBoardRepository implements BoardRepository {
         return boardNameList;
     }
 
-    public Post save(Post post) {
+    public Post savePost(String boardName, Post post) {
+        String tableName = "board_" + boardName;
+
+        String sql = "insert into " + tableName + " (title, content, date, hits) " +
+                "values (:title, :content, :date, :hits)";
+
         SqlParameterSource param = new BeanPropertySqlParameterSource(post);
-        Number key = jdbcInsert.executeAndReturnKey(param);
-        post.setPostId(key.longValue());
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        template.update(sql, param, keyHolder);
+
+        long key = keyHolder.getKey().longValue();
+        post.setId(key);
         return post;
     }
 
-    public void update(Long postId, UpdatePostDto updateParam) {
+    public void updatePost(Long postId, UpdatePostDto updateParam) {
         String sql = "update board " +
                 "set title=:title, content=:content " +
                 "where id=:id";
@@ -94,10 +104,10 @@ public class JDBCBoardRepository implements BoardRepository {
         }
     }
 
-    public List<Post> findAll(String boardName) {
+    public List<Post> findAllPosts(String boardName) {
         String tableName = "board_" + boardName;
 
-        String sql = "select post_id, post_title, post_content, post_date, post_hits " +
+        String sql = "select id, title, content, date, hits " +
                 "from " + tableName;
 
         return template.query(sql, postRowMapper());

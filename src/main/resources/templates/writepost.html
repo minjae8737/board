@@ -32,7 +32,7 @@
             <div class="col">
                 <button class="w-100 btn btn-secondary btn-lg"
                         onclick="location.href='boardmainpage.html'"
-                        th:onclick="|location.href='@{/board}'|"
+                        th:onclick="|location.href='@{/board/{boardName}(boardName=${boardName})}'|"
                         type="button">취소
                 </button>
             </div>

@@ -31,29 +31,27 @@ public class BoardService {
         return newboardNameList;
     }
 
-    public Post save(Post post) {
-        post.setPostHits(0);
-        post.setPostDate(LocalDateTime.now());
-        return boardRepository.save(post);
+    public Post savePost(String boardName, Post post) {
+        post.setHits(0);
+        post.setDate(LocalDateTime.now());
+        return boardRepository.savePost(boardName, post);
     }
 
     public void update(Long postId, UpdatePostDto updateParam) {
-        boardRepository.update(postId, updateParam);
+        boardRepository.updatePost(postId, updateParam);
     }
 
     public Optional<Post> findById(Long boardId) {
         return boardRepository.findById(boardId);
     }
 
-    public List<Post> findPosts(String boardName,PostSearchDto postSearchDto) {
+    public List<Post> findPosts(String boardName, PostSearchDto postSearchDto) {
 
         List<Post> posts;
         if (postSearchDto.getSearchWord() == null) {
-            log.info("--------------------enter findAll()--------------------");
-            posts = boardRepository.findAll(boardName);
+            posts = boardRepository.findAllPosts(boardName);
         } else {
-            log.info("--------------------enter findBySearchWord()--------------------");
-            posts = boardRepository.findBySearchWord(boardName,postSearchDto);
+            posts = boardRepository.findBySearchWord(boardName, postSearchDto);
         }
         Collections.reverse(posts);
         return posts;
