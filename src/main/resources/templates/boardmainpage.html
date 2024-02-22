@@ -60,7 +60,7 @@
 
 
     <hr class="my-4">
-    <form th:action="@{/board}" th:object="${postSearchDto}" method="get">
+    <form th:action="@{/board/{boardName}(boardName=${boardName})}" th:object="${postSearchDto}" method="get">
         <div class="row">
             <div class="col-md-2">
                 <select id="searchType" name="searchType"

@@ -13,15 +13,15 @@ public interface BoardRepository {
 
     public Post savePost(String boardName, Post post);
 
-    public void updatePost(Long postId, UpdatePostDto updateParam);
+    public void updatePost(String boardName,Long postId, UpdatePostDto updateParam);
 
-    public Optional<Post> findById(Long postId);
+    public Optional<Post> findById(String boardName,Long postId);
 
     public List<Post> findAllPosts(String boardName);
 
     public List<Post> findBySearchWord(String boardName,PostSearchDto postSearchDto);
 
-    public void deleteById(Long postId);
+    public void deleteById(String boardName,Long postId);
 
-    public void addHits(Long postId, int hits);
+    public void addHits(String boardName,Long postId, int hits);
 }

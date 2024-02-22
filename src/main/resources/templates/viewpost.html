@@ -22,13 +22,13 @@
 
     <div class="mb-3">
         <label for="title">제목</label>
-        <input type="text" id="title" class="form-control" th:value="${board.title}" readonly>
+        <input type="text" id="title" class="form-control" th:value="${post.title}" readonly>
     </div>
 
     <hr class="my-3">
 
     <div class="mb-3">
-        <textarea id="content" style="resize: none" class="form-control" th:text="${board.content}" rows="8" readonly></textarea>
+        <textarea id="content" style="resize: none" class="form-control" th:text="${post.content}" rows="8" readonly></textarea>
     </div>
 
     <hr class="my-3">
@@ -36,13 +36,13 @@
     <div>
         <button class="w-25 btn btn-primary btn-lg"
                 onclick="location.href='editboard.html'"
-                th:onclick="|location.href='@{/board/edit/{boardId}(boardId=${board.id})}'|"
+                th:onclick="|location.href='@{/board/{boardName}/{postId}/edit(boardName=${boardName},postId=${postId})}'|"
         >
             수정하기
         </button>
         <button class="w-25 btn btn-secondary btn-lg float-end"
                 onclick="location.href='board.html'"
-                th:onclick="|location.href='@{/board}'|"
+                th:onclick="|location.href='@{/board/{boardName}(boardName=${boardName})}'|"
         >
             목록으로
         </button>

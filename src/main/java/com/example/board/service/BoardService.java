@@ -37,12 +37,12 @@ public class BoardService {
         return boardRepository.savePost(boardName, post);
     }
 
-    public void update(Long postId, UpdatePostDto updateParam) {
-        boardRepository.updatePost(postId, updateParam);
+    public void updatePost(String boardName, Long postId, UpdatePostDto updateParam) {
+        boardRepository.updatePost(boardName, postId, updateParam);
     }
 
-    public Optional<Post> findById(Long boardId) {
-        return boardRepository.findById(boardId);
+    public Optional<Post> findById(String boardName, Long postId) {
+        return boardRepository.findById(boardName, postId);
     }
 
     public List<Post> findPosts(String boardName, PostSearchDto postSearchDto) {
@@ -58,13 +58,13 @@ public class BoardService {
     }
 
 
-    public void deleteById(Long postId) {
-        boardRepository.deleteById(postId);
+    public void deleteById(String boardName, Long postId) {
+        boardRepository.deleteById(boardName, postId);
     }
 
 
-    public void addHits(Long postId, int hits) {
-        boardRepository.addHits(postId, hits);
+    public void addHits(String boardName, Long postId, int hits) {
+        boardRepository.addHits(boardName, postId, hits);
     }
 
 

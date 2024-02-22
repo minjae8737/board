@@ -14,10 +14,10 @@
         <h2>글 수정</h2>
     </div>
 
-    <form action="/board/delete" method="post" style="display: inline;">
+    <form th:action="@{/board/{boardName}/delete(boardName=${boardName})}" method="post" style="display: inline;">
         <div class="row justify-content-end">
             <div class="col-auto">
-                <input type="hidden" name="boardId" th:value="${post.id}">
+                <input type="hidden" name="postId" th:value="${post.id}">
                 <button class="btn btn-secondary" type="submit">
                     삭제하기
                 </button>
@@ -51,7 +51,7 @@
             <div class="col">
                 <button class="w-100 btn btn-secondary btn-lg"
                         onclick="location.href='board.html'"
-                        th:onclick="|location.href='@{/board/{boardId}(boardId=${board.id})}'|"
+                        th:onclick="|location.href='@{/board/{postId}(postId=${post.id})}'|"
                         type="button">취소
                 </button>
             </div>

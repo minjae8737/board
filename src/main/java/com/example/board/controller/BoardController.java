@@ -2,6 +2,7 @@ package com.example.board.controller;
 
 import com.example.board.domain.board.Post;
 import com.example.board.domain.board.PostSearchDto;
+import com.example.board.domain.board.UpdatePostDto;
 import com.example.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +25,7 @@ public class BoardController {
 
     @GetMapping("/{boardName}")
     public String showPostList(@ModelAttribute(name = "postSearchDto") PostSearchDto postSearchDto,
-                               @ModelAttribute("boardName") String boardName,
+                               @ModelAttribute(name = "boardName") String boardName,
                                @RequestParam(name = "currentPage", defaultValue = "0") long currentPage,
                                Model model) {
 
@@ -56,21 +57,56 @@ public class BoardController {
         return "boardmainpage";
     }
 
+    @GetMapping("/{boardName}/{postId}")
+    public String showPost(@ModelAttribute("boardName") String boardName, @PathVariable("postId") long postId, Model model) {
+        Post findPost = boardService.findById(boardName, postId).get();
+
+        int findPostHits = findPost.getHits() + 1;
+        boardService.addHits(boardName, postId, findPostHits);
+        findPost.setHits(findPostHits);
+
+        model.addAttribute("post", findPost);
+
+        return "viewpost";
+    }
+
     @GetMapping("/{boardName}/write")
     public String showWritePostForm(@ModelAttribute("boardName") String boardName, Model model) {
-        model.addAttribute("boardName", boardName);
         return "writepost";
     }
 
     @PostMapping("/{boardName}/write")
-    public String writePost(@ModelAttribute("boardName") String boardName, @ModelAttribute("post") Post post, RedirectAttributes redirectAttributes) {
+    public String writePost(@ModelAttribute("boardName") String boardName,
+                            @ModelAttribute("post") Post post,
+                            RedirectAttributes redirectAttributes) {
         Post savedPost = boardService.savePost(boardName, post);
         redirectAttributes.addAttribute("postId", savedPost.getId());
-        return "redirect:/board/{boardName}";
+        return "redirect:/{boardName}/{postId}";
     }
 
+    @GetMapping("/{boardName}/{postId}/edit")
+    public String showEditPostForm(@ModelAttribute("boardName") String boardName,
+                                   @PathVariable("postId") long postId,
+                                   Model model) {
+        Post findPost = boardService.findById(boardName, postId).get();
+        model.addAttribute("post", findPost);
+        return "editpost";
+    }
 
+    @PostMapping("/{boardName}/{postId}/edit")
+    public String editPost(@ModelAttribute("boardName") String boardName,
+                           @PathVariable("postId") long postId,
+                           @ModelAttribute UpdatePostDto updateParam) {
+        boardService.updatePost(boardName, postId, updateParam);
+        return "redirect:/{boardName}/{postId}";
+    }
 
+    @PostMapping("/{boardName}/delete")
+    public String deletePost(@ModelAttribute("boardName") String boardName,
+                             @RequestParam("postId") long postId) {
+        boardService.deleteById(boardName, postId);
+        return "redirect:/{boardName}";
+    }
 
 
     private static int getStartPage(int currentPage) {

@@ -32,14 +32,14 @@ public class JDBCBoardRepository implements BoardRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate template;
-    private final SimpleJdbcInsert jdbcInsert;
+//    private final SimpleJdbcInsert jdbcInsert;
 
     public JDBCBoardRepository(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.template = new NamedParameterJdbcTemplate(dataSource);
-        this.jdbcInsert = new SimpleJdbcInsert(dataSource)
-                .withTableName("board")
-                .usingGeneratedKeyColumns("id");
+//        this.jdbcInsert = new SimpleJdbcInsert(dataSource)
+//                .withTableName("board")
+//                .usingGeneratedKeyColumns("id");
     }
 
     public List<String> findBoardList() {
@@ -77,8 +77,10 @@ public class JDBCBoardRepository implements BoardRepository {
         return post;
     }
 
-    public void updatePost(Long postId, UpdatePostDto updateParam) {
-        String sql = "update board " +
+    public void updatePost(String boardName, Long postId, UpdatePostDto updateParam) {
+        String tableName = "board_" + boardName;
+
+        String sql = "update " + tableName + " " +
                 "set title=:title, content=:content " +
                 "where id=:id";
 
@@ -89,9 +91,11 @@ public class JDBCBoardRepository implements BoardRepository {
         template.update(sql, param);
     }
 
-    public Optional<Post> findById(Long postId) {
+    public Optional<Post> findById(String boardName, Long postId) {
+        String tableName = "board_" + boardName;
+
         String sql = "select id, title, content, date, hits " +
-                "from board " +
+                "from " + tableName + " " +
                 "where id = :id";
 
         try {
@@ -140,23 +144,27 @@ public class JDBCBoardRepository implements BoardRepository {
         return template.query(sql, param, postRowMapper());
     }
 
-    public void deleteById(Long boardId) {
-        String sql = "delete from board " +
+    public void deleteById(String boardName, Long postId) {
+        String tableName = "board_" + boardName;
+
+        String sql = "delete from " + tableName + " " +
                 "where id=:id";
 
         SqlParameterSource param = new MapSqlParameterSource()
-                .addValue("id", boardId);
+                .addValue("id", postId);
         template.update(sql, param);
     }
 
-    public void addHits(Long boardId, int hits) {
-        String sql = "update board " +
+    public void addHits(String boardName, Long postId, int hits) {
+        String tableName = "board_" + boardName;
+
+        String sql = "update " + tableName + " " +
                 "set hits=:hits " +
                 "where id=:id";
 
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("hits", hits)
-                .addValue("id", boardId);
+                .addValue("id", postId);
 
         template.update(sql, param);
     }
