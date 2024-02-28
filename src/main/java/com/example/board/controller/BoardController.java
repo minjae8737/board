@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -96,7 +97,7 @@ public class BoardController {
     @PostMapping("/{boardName}/{postId}/edit")
     public String editPost(@ModelAttribute("boardName") String boardName,
                            @PathVariable("postId") long postId,
-                           @ModelAttribute UpdatePostDto updateParam) {
+                           @Validated @ModelAttribute UpdatePostDto updateParam) {
         boardService.updatePost(boardName, postId, updateParam);
         return "redirect:/{boardName}/{postId}";
     }

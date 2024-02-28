@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
  *          primary key (post_id)
  *      );
  */
+
 @Data
 public class Post {
 
