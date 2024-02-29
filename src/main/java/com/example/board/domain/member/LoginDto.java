@@ -1,4 +1,4 @@
-package com.example.board.domain.Member;
+package com.example.board.domain.member;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

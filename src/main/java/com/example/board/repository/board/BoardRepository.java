@@ -1,4 +1,4 @@
-package com.example.board.repository;
+package com.example.board.repository.board;
 
 import com.example.board.domain.board.Post;
 import com.example.board.domain.board.PostSearchDto;

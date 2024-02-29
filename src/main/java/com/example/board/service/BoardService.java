@@ -3,7 +3,7 @@ package com.example.board.service;
 import com.example.board.domain.board.Post;
 import com.example.board.domain.board.PostSearchDto;
 import com.example.board.domain.board.UpdatePostDto;
-import com.example.board.repository.BoardRepository;
+import com.example.board.repository.board.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,8 +24,12 @@ public class BoardService {
     public List<String> findBoardList() {
         List<String> boardNameList = boardRepository.findBoardList();
 
-        List<String> newboardNameList = boardNameList.stream()
-                .map(s -> s.substring("board_".length()))
+        String compareStr = "board_";
+
+        List<String> newboardNameList =
+                boardNameList.stream()
+                .filter(s -> s.toLowerCase().contains(compareStr))
+                .map(s -> s.substring(compareStr.length()))
                 .collect(Collectors.toList());
 
         return newboardNameList;

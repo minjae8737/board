@@ -1,7 +1,7 @@
 package com.example.board.controller;
 
-import com.example.board.domain.Member.LoginDto;
-import com.example.board.domain.Member.Member;
+import com.example.board.domain.member.LoginDto;
+import com.example.board.domain.member.Member;
 import com.example.board.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -26,7 +26,11 @@ public class MemberController {
     public String showLoginForm(Model mode, HttpServletRequest request) {
         String preUrl = request.getHeader("Referer");
         HttpSession session = request.getSession();
-        session.setAttribute("preUrl", preUrl);
+
+        // 이전화면이 로그인 화면이 아니라면
+        if (preUrl.contains("/login") == false) {
+            session.setAttribute("preUrl", preUrl);
+        }
 
         log.info("url={}", preUrl);
 
@@ -39,8 +43,11 @@ public class MemberController {
         log.info("id={} pass={}", loginDto.getId(), loginDto.getPass());
 
         String preUrl = (String) session.getAttribute("preUrl");
+        boolean couldLogin = memberService.canLogin(loginDto);
 
-        return "redirect:" + (preUrl != null ? preUrl : "/login");
+        log.info("couldLogin={}", couldLogin);
+
+        return "redirect:" + (couldLogin ? preUrl : "/login");
     }
 
     @GetMapping("/join")
@@ -49,8 +56,13 @@ public class MemberController {
     }
 
     @PostMapping("/join")
-    public String join(@ModelAttribute Member member) {
+    public String join(@ModelAttribute Member member,HttpSession session) {
         log.info("id={} pass={} nickName={}", member.getId(), member.getPass(), member.getNickName());
-        return "";
+        boolean isJoined = memberService.join(member);
+
+        String preUrl = (String) session.getAttribute("preUrl");
+        log.info("url={}", preUrl);
+
+        return "redirect:" + (isJoined ? preUrl : "/join");
     }
 }

@@ -1,11 +1,18 @@
-package com.example.board.domain.Member;
+package com.example.board.domain.member;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+/**
+ * CREATE TABLE member (
+ *     id VARCHAR(20) NOT NULL,
+ *     pass VARCHAR(20) NOT NULL,
+ *     nickName VARCHAR(20) NOT NULL,
+ *     PRIMARY KEY (id)
+ * );
+ */
 
 @Data
 public class Member {
