@@ -24,5 +24,5 @@ public class Post {
     private String content; //글내용
     private LocalDateTime date; //날짜
     private int hits; //조회수
-
+//    private String memberId; //FK
 }

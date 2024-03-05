@@ -3,7 +3,9 @@ package com.example.board.controller;
 import com.example.board.domain.board.Post;
 import com.example.board.domain.board.PostSearchDto;
 import com.example.board.domain.board.UpdatePostDto;
+import com.example.board.domain.member.Member;
 import com.example.board.service.BoardService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -28,6 +30,7 @@ public class BoardController {
     public String showPostList(@ModelAttribute(name = "postSearchDto") PostSearchDto postSearchDto,
                                @ModelAttribute(name = "boardName") String boardName,
                                @RequestParam(name = "currentPage", defaultValue = "0") long currentPage,
+                               @SessionAttribute(name = "loginMember", required = false) Member loginedMember,
                                Model model) {
 
         int postSize = 5; // 한 페이지에 보여줄 post 개수
@@ -54,6 +57,9 @@ public class BoardController {
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
         model.addAttribute("yesterdayTime", LocalDateTime.now().minus(24, ChronoUnit.HOURS));
+
+        boolean isLogined = loginedMember != null;
+        model.addAttribute("isLogined", isLogined);
 
         return "boardmainpage";
     }

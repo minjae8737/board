@@ -5,10 +5,12 @@ import com.example.board.domain.member.Member;
 import com.example.board.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,16 +40,30 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute("loginDto") LoginDto loginDto, HttpSession session) {
+    public String login(@Valid @ModelAttribute("loginDto") LoginDto loginDto,
+                        BindingResult bindingResult,
+                        HttpSession session) {
+
+        if (bindingResult.hasErrors()) {
+            return "loginpage";
+        }
 
         log.info("id={} pass={}", loginDto.getId(), loginDto.getPass());
 
         String preUrl = (String) session.getAttribute("preUrl");
-        boolean couldLogin = memberService.canLogin(loginDto);
+        Member loginedMember = memberService.login(loginDto);
+        boolean isLogined = loginedMember != null;
 
-        log.info("couldLogin={}", couldLogin);
+        if (!isLogined) {
+            bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다.");
+            return "loginpage";
+        }
 
-        return "redirect:" + (couldLogin ? preUrl : "/login");
+        log.info("isLogined={} loginMember={}", isLogined, loginedMember);
+
+        session.setAttribute("loginMember", loginedMember);
+
+        return "redirect:" + preUrl;
     }
 
     @GetMapping("/join")
@@ -56,7 +72,7 @@ public class MemberController {
     }
 
     @PostMapping("/join")
-    public String join(@ModelAttribute Member member,HttpSession session) {
+    public String join(@ModelAttribute Member member, HttpSession session) {
         log.info("id={} pass={} nickName={}", member.getId(), member.getPass(), member.getNickName());
         boolean isJoined = memberService.join(member);
 
@@ -65,4 +81,17 @@ public class MemberController {
 
         return "redirect:" + (isJoined ? preUrl : "/join");
     }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request, HttpSession session) {
+        String preUrl = request.getHeader("Referer");
+
+        if (session != null) {
+            log.info("invalidate session ");
+            session.invalidate();
+        }
+
+        return "redirect:" + preUrl;
+    }
+
 }

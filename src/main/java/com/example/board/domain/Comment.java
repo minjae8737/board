@@ -10,5 +10,7 @@ public class Comment {
 
     @NotEmpty
     String content;
+    String memberId; //FK
+    String boardId;  //FK
     LocalDateTime date;
 }

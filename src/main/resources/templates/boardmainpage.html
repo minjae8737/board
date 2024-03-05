@@ -20,12 +20,20 @@
     </div>
 
     <div class="row justify-content-end">
-        <div class="col-auto">
+        <div class="col-auto" th:if="${isLogined == false}">
             <button class="btn btn-primary"
                     onclick="location.href='loginpage.html'"
                     th:onclick="|location.href='@{/login}'|"
             >
                 로그인
+            </button>
+        </div>
+        <div class="col-auto" th:if="${isLogined == true}">
+            <button class="btn btn-primary"
+                    onclick="location.href='boardmainpage.html'"
+                    th:onclick="|location.href='@{/logout}'|"
+            >
+                로그아웃
             </button>
         </div>
     </div>
@@ -42,9 +50,13 @@
             </thead>
             <tbody>
             <tr th:each="post : ${posts}">
-                <td><a href="viewpost.html" th:href="@{/board/{boardName}/{postId}(postId=${post.id},boardName=${boardName})}" th:text="${post.id}">1</a>
+                <td><a href="viewpost.html"
+                       th:href="@{/board/{boardName}/{postId}(postId=${post.id},boardName=${boardName})}"
+                       th:text="${post.id}">1</a>
                 </td>
-                <td><a href="viewpost.html" th:href="@{/board/{boardName}/{postId}(postId=${post.id},boardName=${boardName})}" th:text="${post.title}">제목</a>
+                <td><a href="viewpost.html"
+                       th:href="@{/board/{boardName}/{postId}(postId=${post.id},boardName=${boardName})}"
+                       th:text="${post.title}">제목</a>
                 </td>
                 <p th:if="${post.date.isAfter(yesterdayTime)}">
                     <td th:text="${#temporals.format(post.date, 'HH:mm')}"></td>
@@ -106,7 +118,8 @@
 
                 <!-- 이전 버튼 -->
                 <li th:if="${currentPage != 0}" class="page-item">
-                    <a class="page-link" th:href="@{/board/{boardName}(boardName=${boardName},currentPage=0, sort='id')}">
+                    <a class="page-link"
+                       th:href="@{/board/{boardName}(boardName=${boardName},currentPage=0, sort='id')}">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
@@ -114,14 +127,16 @@
                 <!-- 페이지 번호 -->
                 <li th:each="pageNumber : ${#numbers.sequence(startPage, endPage)}" class="page-item"
                     th:classappend="${pageNumber == currentPage + 1} ? 'active' : ''">
-                    <a class="page-link" th:href="@{/board/{boardName}(boardName=${boardName},currentPage=${pageNumber - 1}, sort='id')}">
+                    <a class="page-link"
+                       th:href="@{/board/{boardName}(boardName=${boardName},currentPage=${pageNumber - 1}, sort='id')}">
                         <span th:text="${pageNumber}">1</span>
                     </a>
                 </li>
 
                 <!-- 다음 버튼 -->
                 <li th:if="${currentPage != totalPages - 1}" class="page-item">
-                    <a class="page-link" th:href="@{/board/{boardName}(boardName=${boardName},currentPage=${totalPages - 1}, sort='id')}">
+                    <a class="page-link"
+                       th:href="@{/board/{boardName}(boardName=${boardName},currentPage=${totalPages - 1}, sort='id')}">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>

@@ -31,17 +31,17 @@ public class MemberService {
     }
 
 
-    public boolean canLogin(LoginDto loginDto) {
+    public Member login(LoginDto loginDto) {
         Optional<Member> findMember = memberRepository.getMemberById(loginDto.getId());
 
-        // 아이디가 존재하지 않으면 false 있다면 비밀번호 비교
+        //아이디가 존재하지 않으면
         if (findMember.isEmpty()) {
             log.info("findMember.isEmpty()");
-            return false;
-        } else {
-            // 비밀번호가 같다면 true 다르다면 false 리턴
-            return findMember.get().getPass().equals(loginDto.getPass());
+            return null;
+        } else if (findMember.get().getPass().equals(loginDto.getPass())) {  //비밀번호 비교
+            return findMember.get();
         }
+        return null;
     }
 
 }

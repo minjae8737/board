@@ -23,7 +23,14 @@
     <div class="col-md-6">
       <div class="card">
         <h5 class="card-header">로그인</h5>
+
+
         <div class="card-body">
+
+<!--          <div th:field="${#fields.hasGlobalErrors()}">-->
+<!--            <p class="field-error" th:each="${#fields.globalErrors()}" th:text="${err}">오류 메세지</p>-->
+<!--          </div>-->
+
           <form action="#" method="post" th:object="${loginDto}" th:action="@{/login}">
             <div class="mb-3">
               <input type="text" class="form-control" placeholder="아이디" name="id" required>
@@ -37,6 +44,8 @@
             </div>
           </form>
         </div>
+
+
       </div>
     </div>
   </div>
