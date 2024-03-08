@@ -1,6 +1,5 @@
 package com.example.board.domain.board;
 
-import com.example.board.domain.SearchType;
 import lombok.Data;
 
 @Data

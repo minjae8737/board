@@ -1,11 +1,11 @@
 package com.example.board.controller;
 
+import com.example.board.domain.board.Comment;
 import com.example.board.domain.board.Post;
 import com.example.board.domain.board.PostSearchDto;
 import com.example.board.domain.board.UpdatePostDto;
 import com.example.board.domain.member.Member;
 import com.example.board.service.BoardService;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -32,7 +32,7 @@ public class BoardController {
                                @RequestParam(name = "currentPage", defaultValue = "0") long currentPage,
                                @SessionAttribute(name = "loginMember", required = false) Member loginedMember,
                                Model model) {
-
+        //페이징
         int postSize = 5; // 한 페이지에 보여줄 post 개수
 
         List<Post> posts = boardService.findPosts(boardName, postSearchDto);
@@ -65,14 +65,30 @@ public class BoardController {
     }
 
     @GetMapping("/{boardName}/{postId}")
-    public String showPost(@ModelAttribute("boardName") String boardName, @PathVariable("postId") long postId, Model model) {
+    public String showPost(@ModelAttribute("boardName") String boardName,
+                           @PathVariable("postId") long postId,
+                           @SessionAttribute(name = "loginMember", required = false) Member loginedMember,
+                           Model model) {
         Post findPost = boardService.findById(boardName, postId).get();
+        List<Comment> comments = boardService.findAllCommentsByPostId(boardName, postId);
 
         int findPostHits = findPost.getHits() + 1;
         boardService.addHits(boardName, postId, findPostHits);
         findPost.setHits(findPostHits);
 
+        //post 작성자와 로그인된 멤버가 같은사람인지
+        boolean isLogined = loginedMember != null;
+
         model.addAttribute("post", findPost);
+        model.addAttribute("comments", comments);
+        model.addAttribute("isLogined", isLogined);
+        model.addAttribute("yesterdayTime", LocalDateTime.now().minus(24, ChronoUnit.HOURS));
+
+        if (isLogined) {
+            boolean isWriter = findPost.getNickname().equals(loginedMember.getNickname());
+            model.addAttribute("loginedNickname", loginedMember.getNickname()); //댓글 비교시
+            model.addAttribute("isWriter", isWriter);
+        }
 
         return "viewpost";
     }
@@ -85,8 +101,9 @@ public class BoardController {
     @PostMapping("/{boardName}/write")
     public String writePost(@ModelAttribute("boardName") String boardName,
                             @ModelAttribute("post") Post post,
+                            @SessionAttribute(name = "loginMember", required = false) Member loginedMember,
                             RedirectAttributes redirectAttributes) {
-        Post savedPost = boardService.savePost(boardName, post);
+        Post savedPost = boardService.savePost(boardName, post, loginedMember);
         redirectAttributes.addAttribute("postId", savedPost.getId());
         return "redirect:/{boardName}/{postId}";
     }
@@ -115,6 +132,17 @@ public class BoardController {
         return "redirect:/{boardName}";
     }
 
+    @PostMapping("/{boardName}/{postId}/comment/write")
+    public String writeComment(@ModelAttribute("boardName") String boardName,
+                               @PathVariable("postId") long postId,
+                               @ModelAttribute("commentContent") Comment comment,
+                               @SessionAttribute(name = "loginMember", required = false) Member loginedMember,
+                               Model model) {
+        log.info("--------------------------------------writeComment()-------------------------------------------");
+        log.info("comment content={} ", comment.getCommentContent());
+        boardService.saveComment(boardName, postId, loginedMember, comment);
+        return "redirect:/board/{boardName}/{postId}";
+    }
 
     private static int getStartPage(int currentPage) {
         return Math.max(1, currentPage - 4);

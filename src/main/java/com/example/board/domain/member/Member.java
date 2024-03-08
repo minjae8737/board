@@ -5,14 +5,14 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
-/**
- * CREATE TABLE member (
- *     id VARCHAR(20) NOT NULL,
- *     pass VARCHAR(20) NOT NULL,
- *     nickName VARCHAR(20) NOT NULL,
- *     PRIMARY KEY (id)
- * );
- */
+/*
+CREATE TABLE member (
+    id VARCHAR(20) NOT NULL,
+    pass VARCHAR(20) NOT NULL,
+    nickname VARCHAR(20) UNIQUE NOT NULL,
+    PRIMARY KEY (id)
+);
+*/
 
 @Data
 public class Member {
@@ -28,6 +28,6 @@ public class Member {
 
     @NotEmpty
     @NotBlank
-    private String nickName; //닉네임
+    private String nickname; //닉네임
 
 }

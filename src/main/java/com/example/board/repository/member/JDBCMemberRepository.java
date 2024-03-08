@@ -30,7 +30,7 @@ public class JDBCMemberRepository implements MemberRepository {
         SqlParameterSource param = new MapSqlParameterSource()
                 .addValue("id", member.getId())
                 .addValue("pass", member.getPass())
-                .addValue("nickname", member.getNickName());
+                .addValue("nickname", member.getNickname());
 
         template.update(sql, param);
     }

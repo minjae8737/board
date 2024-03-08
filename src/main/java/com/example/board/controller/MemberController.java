@@ -67,13 +67,14 @@ public class MemberController {
     }
 
     @GetMapping("/join")
-    public String showJoinForm() {
+    public String showJoinForm(Model model) {
+        model.addAttribute("member", new Member());
         return "joinpage";
     }
 
     @PostMapping("/join")
-    public String join(@ModelAttribute Member member, HttpSession session) {
-        log.info("id={} pass={} nickName={}", member.getId(), member.getPass(), member.getNickName());
+    public String join(@ModelAttribute("member") Member member, HttpSession session) {
+        log.info("id={} pass={} nickName={}", member.getId(), member.getPass(), member.getNickname());
         boolean isJoined = memberService.join(member);
 
         String preUrl = (String) session.getAttribute("preUrl");

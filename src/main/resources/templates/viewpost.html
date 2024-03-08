@@ -13,6 +13,11 @@
     .readonly-field {
         background-color: #ffffff;
     }
+
+    .comment-item {
+        margin-left: 20px; /* 원하는 만큼의 간격을 설정하세요 */
+        margin-right: 20px; /* 원하는 만큼의 간격을 설정하세요 */
+    }
 </style>
 
 <div class="container" style="max-width: 600px">
@@ -28,24 +33,62 @@
     <hr class="my-3">
 
     <div class="mb-3">
-        <textarea id="content" style="resize: none" class="form-control" th:text="${post.content}" rows="8" readonly></textarea>
+        <textarea id="content" style="resize: none" class="form-control" th:text="${post.content}" rows="8"
+                  readonly></textarea>
     </div>
 
     <hr class="my-3">
 
-    <div>
-        <button class="w-25 btn btn-primary btn-lg"
-                onclick="location.href='editboard.html'"
-                th:onclick="|location.href='@{/board/{boardName}/{postId}/edit(boardName=${boardName},postId=${postId})}'|"
-        >
-            수정하기
-        </button>
-        <button class="w-25 btn btn-secondary btn-lg float-end"
-                onclick="location.href='board.html'"
-                th:onclick="|location.href='@{/board/{boardName}(boardName=${boardName})}'|"
-        >
-            목록으로
-        </button>
+    <div class="card my-2" th:each="comment : ${comments}">
+        <div class="comment-item mt-3 mb-3 d-flex justify-content-between">
+            <div th:text="${comment.memberNickname}">닉네임</div>
+            <div th:if="${comment.date.isAfter(yesterdayTime)}"
+                 th:text="${#temporals.format(comment.date, 'HH:mm')}">
+            </div>
+            <div th:unless="${comment.date.isAfter(yesterdayTime)}"
+                 th:text="${#temporals.format(comment.date, 'MM-dd')}">
+            </div>
+        </div>
+        <div class="comment-item  mb-3 ">
+            <div th:text="${comment.commentContent}">내용</div>
+        </div>
+        <!-- 수정하기 버튼 공간 -->
+
+    </div>
+
+    <!--댓글 등록-->
+    <div th:if="${isLogined}">
+        <div th:if="${isWriter}">
+            <form th:action="@{/board/{boardName}/{postId}/comment/write(boardName=${boardName}, postId=${postId})}"
+                  method="post">
+                <div class="mb-3">
+                    <textarea id="commentContent" name="commentContent" style="resize:none" class="form-control"
+                              rows="2"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">댓글 등록</button>
+            </form>
+        </div>
+    </div>
+
+    <hr class="my-3">
+
+    <div class="row justify-content-between">
+        <div class="col-auto" th:if="${isWriter}">
+            <button class="btn btn-primary btn-lg"
+                    onclick="location.href='editboard.html'"
+                    th:onclick="|location.href='@{/board/{boardName}/{postId}/edit(boardName=${boardName},postId=${postId})}'|"
+            >
+                수정하기
+            </button>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-secondary btn-lg float-end"
+                    onclick="location.href='board.html'"
+                    th:onclick="|location.href='@{/board/{boardName}(boardName=${boardName})}'|"
+            >
+                목록으로
+            </button>
+        </div>
     </div>
 </div>
 

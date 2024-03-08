@@ -1,9 +1,6 @@
 package com.example.board.repository.board;
 
-import com.example.board.domain.SearchType;
-import com.example.board.domain.board.Post;
-import com.example.board.domain.board.PostSearchDto;
-import com.example.board.domain.board.UpdatePostDto;
+import com.example.board.domain.board.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -41,6 +38,7 @@ public class JDBCBoardRepository implements BoardRepository {
 //                .usingGeneratedKeyColumns("id");
     }
 
+    @Override
     public List<String> findBoardList() {
         String sql = "show tables";
 
@@ -61,11 +59,12 @@ public class JDBCBoardRepository implements BoardRepository {
         return boardNameList;
     }
 
+    @Override
     public Post savePost(String boardName, Post post) {
         String tableName = "board_" + boardName;
 
-        String sql = "insert into " + tableName + " (title, content, date, hits) " +
-                "values (:title, :content, :date, :hits)";
+        String sql = "insert into " + tableName + " (title, content, date, hits,nickname) " +
+                "values (:title, :content, :date, :hits, :nickname)";
 
         SqlParameterSource param = new BeanPropertySqlParameterSource(post);
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -76,6 +75,7 @@ public class JDBCBoardRepository implements BoardRepository {
         return post;
     }
 
+    @Override
     public void updatePost(String boardName, Long postId, UpdatePostDto updateParam) {
         String tableName = "board_" + boardName;
 
@@ -90,10 +90,11 @@ public class JDBCBoardRepository implements BoardRepository {
         template.update(sql, param);
     }
 
-    public Optional<Post> findById(String boardName, Long postId) {
+    @Override
+    public Optional<Post> findPostById(String boardName, Long postId) {
         String tableName = "board_" + boardName;
 
-        String sql = "select id, title, content, date, hits " +
+        String sql = "select id, title, content, date, hits, nickname " +
                 "from " + tableName + " " +
                 "where id = :id";
 
@@ -107,20 +108,22 @@ public class JDBCBoardRepository implements BoardRepository {
         }
     }
 
+    @Override
     public List<Post> findAllPosts(String boardName) {
         String tableName = "board_" + boardName;
 
-        String sql = "select id, title, content, date, hits " +
+        String sql = "select id, title, content, date, hits, nickname " +
                 "from " + tableName;
 
         return template.query(sql, postRowMapper());
     }
 
+    @Override
     public List<Post> findBySearchWord(String boardName, PostSearchDto postSearchDto) {
 
         String tableName = "board_" + boardName;
 
-        String sql = "select id, title, content, date, hits " +
+        String sql = "select id, title, content, date, hits, nickname " +
                 "from " + tableName + " " +
                 "where ";
 
@@ -143,6 +146,7 @@ public class JDBCBoardRepository implements BoardRepository {
         return template.query(sql, param, postRowMapper());
     }
 
+    @Override
     public void deleteById(String boardName, Long postId) {
         String tableName = "board_" + boardName;
 
@@ -154,6 +158,7 @@ public class JDBCBoardRepository implements BoardRepository {
         template.update(sql, param);
     }
 
+    @Override
     public void addHits(String boardName, Long postId, int hits) {
         String tableName = "board_" + boardName;
 
@@ -168,7 +173,42 @@ public class JDBCBoardRepository implements BoardRepository {
         template.update(sql, param);
     }
 
+    @Override
+    public Comment saveComment(String boardName, Long postId, Comment comment) {
+        String tableName = "comment_" + boardName;
+
+        String sql = "insert into " + tableName + " (comment_content, member_nickname, post_id, date) " +
+                "values (:commentContent, :memberNickname, :postId, :date)";
+
+        SqlParameterSource param = new BeanPropertySqlParameterSource(comment);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        template.update(sql, param, keyHolder);
+
+        long key = keyHolder.getKey().longValue();
+        comment.setId(key);
+
+        return comment;
+    }
+
+    @Override
+    public List<Comment> findAllCommentsByPostId(String boardName, Long postId) {
+        String tableName = "comment_" + boardName;
+
+        String sql = "select id, comment_content, member_nickname, post_id, date " +
+                "from " + tableName + " " +
+                "where post_id=:postId";
+
+        SqlParameterSource param = new MapSqlParameterSource()
+                .addValue("postId", postId);
+
+        return template.query(sql, param, commentRowMapper());
+    }
+
     private RowMapper<Post> postRowMapper() {
         return BeanPropertyRowMapper.newInstance(Post.class);
+    }
+
+    private RowMapper<Comment> commentRowMapper() {
+        return BeanPropertyRowMapper.newInstance(Comment.class);
     }
 }

@@ -1,8 +1,10 @@
 package com.example.board.service;
 
+import com.example.board.domain.board.Comment;
 import com.example.board.domain.board.Post;
 import com.example.board.domain.board.PostSearchDto;
 import com.example.board.domain.board.UpdatePostDto;
+import com.example.board.domain.member.Member;
 import com.example.board.repository.board.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,16 +30,17 @@ public class BoardService {
 
         List<String> newboardNameList =
                 boardNameList.stream()
-                .filter(s -> s.toLowerCase().contains(compareStr))
-                .map(s -> s.substring(compareStr.length()))
-                .collect(Collectors.toList());
+                        .filter(s -> s.toLowerCase().contains(compareStr))
+                        .map(s -> s.substring(compareStr.length()))
+                        .collect(Collectors.toList());
 
         return newboardNameList;
     }
 
-    public Post savePost(String boardName, Post post) {
+    public Post savePost(String boardName, Post post, Member loginedMember) {
         post.setHits(0);
         post.setDate(LocalDateTime.now());
+        post.setNickname(loginedMember.getNickname());
         return boardRepository.savePost(boardName, post);
     }
 
@@ -46,7 +49,7 @@ public class BoardService {
     }
 
     public Optional<Post> findById(String boardName, Long postId) {
-        return boardRepository.findById(boardName, postId);
+        return boardRepository.findPostById(boardName, postId);
     }
 
     public List<Post> findPosts(String boardName, PostSearchDto postSearchDto) {
@@ -61,7 +64,6 @@ public class BoardService {
         return posts;
     }
 
-
     public void deleteById(String boardName, Long postId) {
         boardRepository.deleteById(boardName, postId);
     }
@@ -71,5 +73,16 @@ public class BoardService {
         boardRepository.addHits(boardName, postId, hits);
     }
 
+    public void saveComment(String boardName, Long postId, Member loginedMember, Comment comment) {
+        comment.setMemberNickname(loginedMember.getNickname());
+        comment.setPostId(postId);
+        comment.setDate(LocalDateTime.now());
+        boardRepository.saveComment(boardName, postId, comment);
+    }
+
+    public List<Comment> findAllCommentsByPostId(String boardName, Long postId) {
+        List<Comment> comments = boardRepository.findAllCommentsByPostId(boardName, postId);
+        return comments;
+    }
 
 }
