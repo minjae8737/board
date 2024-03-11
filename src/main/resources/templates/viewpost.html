@@ -71,7 +71,6 @@
 
     <!--댓글 등록-->
     <div th:if="${isLogined}">
-        <div th:if="${isWriter}">
             <form th:action="@{/board/{boardName}/{postId}/comment/write(boardName=${boardName}, postId=${postId})}"
                   method="post">
                 <div class="mb-3">
@@ -80,7 +79,6 @@
                 </div>
                 <button type="submit" class="btn btn-primary">댓글 등록</button>
             </form>
-        </div>
     </div>
 
     <hr class="my-3">

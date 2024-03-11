@@ -6,19 +6,20 @@
           href="css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<div class="py-5 text-center">
-    <h2>메인 화면</h2>
-</div>
 
-<div th:each="boardName : ${boardList}">
-<!--  <h2 th:text="${board.name}"></h2>-->
-  <ul>
-    <li>
-      <a th:href="@{/board/{boardName}(boardName=${boardName})}" th:text="${boardName}">게시판 이름</a>
-    </li>
-  </ul>
-</div>
+<div class="container" style="max-width: 600px">
+    <div class="py-5 text-center">
+        <h2>메인 화면</h2>
+    </div>
 
+    <div class="" th:each="boardName : ${boardList}">
+        <ul>
+            <li>
+                <a th:href="@{/board/{boardName}(boardName=${boardName})}" th:text="${boardName}">게시판 이름</a>
+            </li>
+        </ul>
+    </div>
+</div>
 
 </body>
 </html>
