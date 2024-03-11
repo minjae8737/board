@@ -120,7 +120,6 @@
     <div class="pagination-container">
         <nav aria-label="Page navigation">
             <ul class="pagination">
-                <!-- 페이징 내용이 들어갈 자리 -->
 
                 <!-- 이전 버튼 -->
                 <li th:if="${currentPage != 0}" class="page-item">
@@ -140,7 +139,7 @@
                 </li>
 
                 <!-- 다음 버튼 -->
-                <li th:if="${currentPage != totalPages - 1}" class="page-item">
+                <li th:if="${currentPage <= totalPages - 1}" class="page-item">
                     <a class="page-link"
                        th:href="@{/board/{boardName}(boardName=${boardName},currentPage=${totalPages - 1}, sort='id')}">
                         <span aria-hidden="true">&raquo;</span>

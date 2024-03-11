@@ -41,12 +41,17 @@ public class BoardController {
         //totalPages : 페이지 총 개수
         int totalPages = ((float) postCount % (float) postSize == 0f) ? postCount / postSize : postCount / postSize + 1;
 
+//        log.info("postCount={} totalPages={}", postCount, totalPages);
+
         int startBoardIndex = (int) currentPage * postSize;
         //endBoardIndex : 마지막 페이지에서 board개수가 boardSize보다 작으면 boardCount 같으면 (int) (page + 1) * boardSize
         int endBoardIndex = Math.min(postCount, (int) (currentPage + 1) * postSize);
 
         int startPage = getStartPage((int) currentPage + 1);
         int endPage = getEndPage((int) currentPage + 1, totalPages);
+
+//        log.info("startPage={} endPage={}", startPage, endPage);
+//        log.info("currentPage={} totalPages={}", currentPage, totalPages);
 
         posts = posts.subList(startBoardIndex, endBoardIndex);  //현재 page에 표시할 board 리스트
 

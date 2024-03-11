@@ -25,16 +25,29 @@
         <h2>글 내용</h2>
     </div>
 
-    <div class="mb-3">
-        <label for="title">제목</label>
-        <input type="text" id="title" class="form-control" th:value="${post.title}" readonly>
+    <hr class="my-3">
+
+    <div class="">
+        <div class="form-control" th:text="${post.title}">제목</div>
+        <div class="my-2 form-control d-flex justify-content-between">
+            <div th:text="${post.nickname}">작성자</div>
+            <div>
+                <div th:if="${post.date.isAfter(yesterdayTime)}"
+                     th:text="${#temporals.format(post.date, 'HH:mm')}">
+                </div>
+                <div th:unless="${post.date.isAfter(yesterdayTime)}"
+                     th:text="${#temporals.format(post.date, 'MM-dd')}">
+                </div>
+            </div>
+
+        </div>
+
     </div>
 
     <hr class="my-3">
 
-    <div class="mb-3">
-        <textarea id="content" style="resize: none" class="form-control" th:text="${post.content}" rows="8"
-                  readonly></textarea>
+    <div class="">
+        <textarea id="content" style="resize: none" class="form-control" th:text="${post.content}" rows="8" readonly></textarea>
     </div>
 
     <hr class="my-3">
