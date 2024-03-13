@@ -22,14 +22,16 @@ public interface BoardRepository {
 
     public List<Post> findBySearchWord(String boardName, PostSearchDto postSearchDto);
 
-    public void deleteById(String boardName, Long postId);
+    public void deletePostById(String boardName, Long postId);
 
     public void addHits(String boardName, Long postId, int hits);
 
     public Comment saveComment(String boardName, Long postId, Comment comment);
 
-//    public void updateComment();
-//    public void deleteComment();
+    public void updateComment(String boardName, Long commentId);
+
+    public void deleteCommentById(String boardName, Long commentId);
+
     public List<Comment> findAllCommentsByPostId(String boardName, Long postId);
 
 }

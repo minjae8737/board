@@ -147,7 +147,7 @@ public class JDBCBoardRepository implements BoardRepository {
     }
 
     @Override
-    public void deleteById(String boardName, Long postId) {
+    public void deletePostById(String boardName, Long postId) {
         String tableName = "board_" + boardName;
 
         String sql = "delete from " + tableName + " " +
@@ -188,6 +188,25 @@ public class JDBCBoardRepository implements BoardRepository {
         comment.setId(key);
 
         return comment;
+    }
+
+    @Override
+    public void updateComment(String boardName, Long commentId) {
+        String tableName = "comment_" + boardName;
+
+    }
+
+    @Override
+    public void deleteCommentById(String boardName, Long commentId) {
+        String tableName = "comment_" + boardName;
+
+        String sql = "delete from " + tableName + " " +
+                "where id=:id";
+
+        SqlParameterSource param = new MapSqlParameterSource()
+                .addValue("id", commentId);
+
+        template.update(sql, param);
     }
 
     @Override

@@ -90,9 +90,9 @@ public class BoardController {
         model.addAttribute("yesterdayTime", LocalDateTime.now().minus(24, ChronoUnit.HOURS));
 
         if (isLogined) {
-            boolean isWriter = findPost.getNickname().equals(loginedMember.getNickname());
+            boolean isPostWriter = findPost.getNickname().equals(loginedMember.getNickname());
             model.addAttribute("loginedNickname", loginedMember.getNickname()); //댓글 비교시
-            model.addAttribute("isWriter", isWriter);
+            model.addAttribute("isPostWriter", isPostWriter);
         }
 
         return "viewpost";
@@ -146,6 +146,25 @@ public class BoardController {
         log.info("--------------------------------------writeComment()-------------------------------------------");
         log.info("comment content={} ", comment.getCommentContent());
         boardService.saveComment(boardName, postId, loginedMember, comment);
+        return "redirect:/board/{boardName}/{postId}";
+    }
+
+    @GetMapping("/{boardName}/{postId}/comment/{commentId}/edit")
+    public String editComment(@ModelAttribute("boardName") String boardName,
+                              @PathVariable("postId") long postId,
+                              @PathVariable("commentId") long commentId,
+                              Model model) {
+        log.info("commentId={}", commentId);
+
+        return "redirect:/board/{boardName}/{postId}";
+    }
+
+    @GetMapping("/{boardName}/{postId}/comment/{commentId}/delete")
+    public String deleteComment(@ModelAttribute("boardName") String boardName,
+                                @PathVariable("postId") long postId,
+                                @PathVariable("commentId") long commentId,
+                                Model model) {
+        boardService.deleteCommentById(boardName, commentId);
         return "redirect:/board/{boardName}/{postId}";
     }
 

@@ -47,44 +47,63 @@
     <hr class="my-3">
 
     <div class="">
-        <textarea id="content" style="resize: none" class="form-control" th:text="${post.content}" rows="8" readonly></textarea>
+        <textarea id="content" style="resize: none" class="form-control" th:text="${post.content}" rows="8"
+                  readonly></textarea>
     </div>
 
     <hr class="my-3">
 
-    <div class="card my-2" th:each="comment : ${comments}">
-        <div class="comment-item mt-3 mb-3 d-flex justify-content-between">
-            <div th:text="${comment.memberNickname}">닉네임</div>
-            <div th:if="${comment.date.isAfter(yesterdayTime)}"
-                 th:text="${#temporals.format(comment.date, 'HH:mm')}">
+    <div class="my-2" th:each="comment : ${comments}">
+        <div class="card">
+            <div class="comment-item mt-3 mb-3 d-flex justify-content-between">
+                <div th:text="${comment.memberNickname}">닉네임</div>
+                <div th:if="${comment.date.isAfter(yesterdayTime)}"
+                     th:text="${#temporals.format(comment.date, 'HH:mm')}">
+                </div>
+                <div th:unless="${comment.date.isAfter(yesterdayTime)}"
+                     th:text="${#temporals.format(comment.date, 'MM-dd')}">
+                </div>
             </div>
-            <div th:unless="${comment.date.isAfter(yesterdayTime)}"
-                 th:text="${#temporals.format(comment.date, 'MM-dd')}">
+
+
+            <div class="comment-item  mb-3 ">
+<!--                <div th:text="${comment.commentContent}">내용</div>-->
+                <div class="comment-content" onclick="editComment(this, '${comment.commentId}', '${comment.commentContent}')"
+                     th:text="${comment.commentContent}" style="cursor: pointer;">
+                    내용
+                </div>
             </div>
-        </div>
-        <div class="comment-item  mb-3 ">
-            <div th:text="${comment.commentContent}">내용</div>
         </div>
         <!-- 수정하기 버튼 공간 -->
-
+        <div th:if="${comment.memberNickname.equals(loginedNickname)}">
+            <button class="btn btn-outline-primary"
+                    th:onclick="|location.href='@{/board/{boardName}/{postId}/comment/{commentId}/edit(boardName=${boardName},postId=${postId},commentId=${comment.id})}'|"
+            >
+                수정
+            </button>
+            <button class="btn btn-close btn-outline-secondary"
+                    th:onclick="|location.href='@{/board/{boardName}/{postId}/comment/{commentId}/delete(boardName=${boardName},postId=${postId},commentId=${comment.id})}'|"
+            >
+            </button>
+        </div>
     </div>
 
     <!--댓글 등록-->
     <div th:if="${isLogined}">
-            <form th:action="@{/board/{boardName}/{postId}/comment/write(boardName=${boardName}, postId=${postId})}"
-                  method="post">
-                <div class="mb-3">
+        <form th:action="@{/board/{boardName}/{postId}/comment/write(boardName=${boardName}, postId=${postId})}"
+              method="post">
+            <div class="mb-3">
                     <textarea id="commentContent" name="commentContent" style="resize:none" class="form-control"
                               rows="2"></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">댓글 등록</button>
-            </form>
+            </div>
+            <button type="submit" class="btn btn-primary">댓글 등록</button>
+        </form>
     </div>
 
     <hr class="my-3">
 
     <div class="row justify-content-between">
-        <div class="col-auto" th:if="${isWriter}">
+        <div class="col-auto" th:if="${isPostWriter}">
             <button class="btn btn-primary btn-lg"
                     onclick="location.href='editboard.html'"
                     th:onclick="|location.href='@{/board/{boardName}/{postId}/edit(boardName=${boardName},postId=${postId})}'|"

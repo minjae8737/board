@@ -151,6 +151,18 @@
         </nav>
     </div>
 
+    <!-- 게시판 목록으로 가기 버튼 -->
+    <div>
+        <div class="">
+            <button class="btn btn-secondary"
+                    onclick="location.href='board.html'"
+                    th:onclick="|location.href='@{/}'|"
+            >
+                게시판 목록
+            </button>
+        </div>
+    </div>
+
 </div>
 
 

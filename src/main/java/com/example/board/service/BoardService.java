@@ -65,7 +65,7 @@ public class BoardService {
     }
 
     public void deleteById(String boardName, Long postId) {
-        boardRepository.deleteById(boardName, postId);
+        boardRepository.deletePostById(boardName, postId);
     }
 
 
@@ -78,6 +78,14 @@ public class BoardService {
         comment.setPostId(postId);
         comment.setDate(LocalDateTime.now());
         boardRepository.saveComment(boardName, postId, comment);
+    }
+
+    public void updateComment(String boardName, Long commentId, Comment comment) {
+
+    }
+
+    public void deleteCommentById(String boardName, Long commentId) {
+        boardRepository.deleteCommentById(boardName, commentId);
     }
 
     public List<Comment> findAllCommentsByPostId(String boardName, Long postId) {
