@@ -110,7 +110,7 @@ public class BoardController {
                             RedirectAttributes redirectAttributes) {
         Post savedPost = boardService.savePost(boardName, post, loginedMember);
         redirectAttributes.addAttribute("postId", savedPost.getId());
-        return "redirect:/{boardName}/{postId}";
+        return "redirect:/board/{boardName}/{postId}";
     }
 
     @GetMapping("/{boardName}/{postId}/edit")

@@ -1,5 +1,9 @@
 package com.example.board.domain.board;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -19,9 +23,12 @@ create table board_
 */
 
 @Data
+@Entity
 public class Post {
 
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; //글 id (PK)
+
     private String title; //글제목
     private String content; //글내용
     private LocalDateTime date; //날짜

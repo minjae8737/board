@@ -1,5 +1,9 @@
 package com.example.board.domain.board;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
@@ -20,8 +24,10 @@ create table comment_
 */
 
 @Data
+@Entity
 public class Comment {
 
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; //댓글 id (PK)
 
     @NotEmpty

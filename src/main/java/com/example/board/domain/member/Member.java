@@ -1,5 +1,6 @@
 package com.example.board.domain.member;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -15,11 +16,13 @@ CREATE TABLE member (
 */
 
 @Data
+@Entity
 public class Member {
 
 
     @NotNull
     @NotBlank
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id; //아이디
 
     @NotNull
@@ -30,4 +33,6 @@ public class Member {
     @NotBlank
     private String nickname; //닉네임
 
+    public Member() {
+    }
 }

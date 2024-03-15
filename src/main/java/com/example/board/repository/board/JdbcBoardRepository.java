@@ -24,13 +24,13 @@ import java.util.Optional;
 @Slf4j
 @Repository
 @Transactional
-public class JDBCBoardRepository implements BoardRepository {
+public class JdbcBoardRepository implements BoardRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate template;
 //    private final SimpleJdbcInsert jdbcInsert;
 
-    public JDBCBoardRepository(DataSource dataSource) {
+    public JdbcBoardRepository(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.template = new NamedParameterJdbcTemplate(dataSource);
 //        this.jdbcInsert = new SimpleJdbcInsert(dataSource)
