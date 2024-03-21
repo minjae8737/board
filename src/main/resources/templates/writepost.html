@@ -19,7 +19,7 @@
         <hr class="my-3">
 
         <div>
-            <textarea id="content" name="content" style="resize: none" class="form-control" rows="8" placeholder="내용을 입력하세요."></textarea>
+            <textarea id="postContent" name="postContent" style="resize: none" class="form-control" rows="8" placeholder="내용을 입력하세요."></textarea>
         </div>
 
         <hr class="my-3">
@@ -31,7 +31,7 @@
             <div class="col">
                 <button class="w-100 btn btn-secondary btn-lg"
                         onclick="location.href='boardmainpage.html'"
-                        th:onclick="|location.href='@{/board/{boardName}(boardName=${boardName})}'|"
+                        th:onclick="|location.href='@{/board/{boardId}(boardId=${boardId})}'|"
                         type="button">취소
                 </button>
             </div>

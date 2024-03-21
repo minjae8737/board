@@ -1,37 +1,34 @@
 package com.example.board.repository.board;
 
-import com.example.board.domain.board.Comment;
-import com.example.board.domain.board.Post;
-import com.example.board.domain.board.PostSearchDto;
-import com.example.board.domain.board.UpdatePostDto;
+import com.example.board.domain.board.*;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface BoardRepository {
 
-    public List<String> findBoardList();
+    public List<Board> findBoardList();
 
-    public Post savePost(String boardName, Post post);
+    public Post savePost(Post post);
 
-    public void updatePost(String boardName, Long postId, UpdatePostDto updateParam);
+    public void updatePost(Long postId, UpdatePostDto updateParam);
 
-    public Optional<Post> findPostById(String boardName, Long postId);
+    public Optional<Post> findPostById(Long postId);
 
-    public List<Post> findAllPosts(String boardName);
+    public List<Post> findAllPosts(String boardId);
 
-    public List<Post> findBySearchWord(String boardName, PostSearchDto postSearchDto);
+    public List<Post> findBySearchWord(String boardId, PostSearchDto postSearchDto);
 
-    public void deletePostById(String boardName, Long postId);
+    public void deletePostById(Long postId);
 
-    public void addHits(String boardName, Long postId, int hits);
+    public void addHits(Long postId, int hits);
 
-    public Comment saveComment(String boardName, Long postId, Comment comment);
+    public Comment saveComment(Long postId, Comment comment);
 
-    public void updateComment(String boardName, Long commentId);
+    public void updateComment(String boardId, Long commentId);
 
-    public void deleteCommentById(String boardName, Long commentId);
+    public void deleteCommentById(Long commentId);
 
-    public List<Comment> findAllCommentsByPostId(String boardName, Long postId);
+    public List<Comment> findAllCommentsByPostId(Long postId);
 
 }

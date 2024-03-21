@@ -14,7 +14,7 @@
         <h2>글 수정</h2>
     </div>
 
-    <form th:action="@{/board/{boardName}/delete(boardName=${boardName})}" method="post" style="display: inline;">
+    <form th:action="@{/board/{boardId}/delete(boardId=${boardId})}" method="post" style="display: inline;">
         <div class="row justify-content-end">
             <div class="col-auto">
                 <input type="hidden" name="postId" th:value="${post.id}">
@@ -35,7 +35,7 @@
         <hr class="my-3">
 
         <div class="mb-3">
-            <textarea id="content" name="content" style="resize: none" class="form-control" th:text="${post.content}"
+            <textarea id="postContent" name="postContent" style="resize: none" class="form-control" th:text="${post.postContent}"
                       rows="8"></textarea>
         </div>
 
@@ -51,7 +51,7 @@
             <div class="col">
                 <button class="w-100 btn btn-secondary btn-lg"
                         onclick="location.href='board.html'"
-                        th:onclick="|location.href='@{/board/{boardName}/{postId}(boardName=${boardName},postId=${post.id})}'|"
+                        th:onclick="|location.href='@{/board/{boardId}/{postId}(boardId=${boardId},postId=${post.id})}'|"
                         type="button">취소
                 </button>
             </div>

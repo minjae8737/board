@@ -12,11 +12,11 @@
         <h2>메인 화면</h2>
     </div>
 
-    <div th:each="boardName : ${boardList}">
+    <div th:each="board : ${boardList}">
         <button class="btn btn-outline-primary my-2"
                 onclick="location.href='boardmainpage.html'"
-                th:onclick="|location.href='@{/board/{boardName}(boardName=${boardName})}'|"
-                th:text="${boardName}">
+                th:onclick="|location.href='@{/board/{boardId}(boardId=${board.id})}'|"
+                th:text="${board.name}">
             게시판 이름
         </button>
     </div>

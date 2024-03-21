@@ -22,7 +22,7 @@ public class Member {
 
     @NotNull
     @NotBlank
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     private String id; //아이디
 
     @NotNull

@@ -30,7 +30,7 @@
     <div class="">
         <div class="form-control" th:text="${post.title}">제목</div>
         <div class="my-2 form-control d-flex justify-content-between">
-            <div th:text="${post.nickname}">작성자</div>
+            <div th:text="${post.memberNickname}">작성자</div>
             <div>
                 <div th:if="${post.date.isAfter(yesterdayTime)}"
                      th:text="${#temporals.format(post.date, 'HH:mm')}">
@@ -47,7 +47,7 @@
     <hr class="my-3">
 
     <div class="">
-        <textarea id="content" style="resize: none" class="form-control" th:text="${post.content}" rows="8"
+        <textarea id="postContent" style="resize: none" class="form-control" th:text="${post.postContent}" rows="8"
                   readonly></textarea>
     </div>
 
@@ -67,9 +67,7 @@
 
 
             <div class="comment-item  mb-3 ">
-<!--                <div th:text="${comment.commentContent}">내용</div>-->
-                <div class="comment-content" onclick="editComment(this, '${comment.commentId}', '${comment.commentContent}')"
-                     th:text="${comment.commentContent}" style="cursor: pointer;">
+                <div class="comment-content" th:text="${comment.commentContent}" >
                     내용
                 </div>
             </div>
@@ -77,12 +75,12 @@
         <!-- 수정하기 버튼 공간 -->
         <div th:if="${comment.memberNickname.equals(loginedNickname)}">
             <button class="btn btn-outline-primary"
-                    th:onclick="|location.href='@{/board/{boardName}/{postId}/comment/{commentId}/edit(boardName=${boardName},postId=${postId},commentId=${comment.id})}'|"
+                    th:onclick="|location.href='@{/board/{boardId}/{postId}/comment/{commentId}/edit(boardId=${boardId},postId=${postId},commentId=${comment.id})}'|"
             >
                 수정
             </button>
             <button class="btn btn-close btn-outline-secondary"
-                    th:onclick="|location.href='@{/board/{boardName}/{postId}/comment/{commentId}/delete(boardName=${boardName},postId=${postId},commentId=${comment.id})}'|"
+                    th:onclick="|location.href='@{/board/{boardId}/{postId}/comment/{commentId}/delete(boardId=${boardId},postId=${postId},commentId=${comment.id})}'|"
             >
             </button>
         </div>
@@ -90,7 +88,7 @@
 
     <!--댓글 등록-->
     <div th:if="${isLogined}">
-        <form th:action="@{/board/{boardName}/{postId}/comment/write(boardName=${boardName}, postId=${postId})}"
+        <form th:action="@{/board/{boardId}/{postId}/comment/write(boardId=${boardId}, postId=${postId})}"
               method="post">
             <div class="mb-3">
                     <textarea id="commentContent" name="commentContent" style="resize:none" class="form-control"
@@ -106,7 +104,7 @@
         <div class="col-auto" th:if="${isPostWriter}">
             <button class="btn btn-primary btn-lg"
                     onclick="location.href='editboard.html'"
-                    th:onclick="|location.href='@{/board/{boardName}/{postId}/edit(boardName=${boardName},postId=${postId})}'|"
+                    th:onclick="|location.href='@{/board/{boardId}/{postId}/edit(boardId=${boardId},postId=${postId})}'|"
             >
                 수정하기
             </button>
@@ -114,7 +112,7 @@
         <div class="col-auto">
             <button class="btn btn-secondary btn-lg float-end"
                     onclick="location.href='board.html'"
-                    th:onclick="|location.href='@{/board/{boardName}(boardName=${boardName})}'|"
+                    th:onclick="|location.href='@{/board/{boardId}(boardId=${boardId})}'|"
             >
                 목록으로
             </button>

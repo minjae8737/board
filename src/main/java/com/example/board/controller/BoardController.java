@@ -26,16 +26,16 @@ public class BoardController {
 
     private final BoardService boardService;
 
-    @GetMapping("/{boardName}")
+    @GetMapping("/{boardId}")
     public String showPostList(@ModelAttribute(name = "postSearchDto") PostSearchDto postSearchDto,
-                               @ModelAttribute(name = "boardName") String boardName,
+                               @ModelAttribute(name = "boardId") String boardId,
                                @RequestParam(name = "currentPage", defaultValue = "0") long currentPage,
                                @SessionAttribute(name = "loginMember", required = false) Member loginedMember,
                                Model model) {
         //페이징
         int postSize = 5; // 한 페이지에 보여줄 post 개수
 
-        List<Post> posts = boardService.findPosts(boardName, postSearchDto);
+        List<Post> posts = boardService.findPosts(boardId, postSearchDto);
 
         int postCount = posts.size();  // board 총 개수
         //totalPages : 페이지 총 개수
@@ -56,7 +56,7 @@ public class BoardController {
         posts = posts.subList(startBoardIndex, endBoardIndex);  //현재 page에 표시할 board 리스트
 
         model.addAttribute("posts", posts);
-        model.addAttribute("boardName", boardName);
+        model.addAttribute("boardId", boardId);
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("startPage", startPage);
@@ -69,16 +69,16 @@ public class BoardController {
         return "boardmainpage";
     }
 
-    @GetMapping("/{boardName}/{postId}")
-    public String showPost(@ModelAttribute("boardName") String boardName,
+    @GetMapping("/{boardId}/{postId}")
+    public String showPost(@ModelAttribute("boardId") String boardId,
                            @PathVariable("postId") long postId,
                            @SessionAttribute(name = "loginMember", required = false) Member loginedMember,
                            Model model) {
-        Post findPost = boardService.findById(boardName, postId).get();
-        List<Comment> comments = boardService.findAllCommentsByPostId(boardName, postId);
+        Post findPost = boardService.findById(postId).get();
+        List<Comment> comments = boardService.findAllCommentsByPostId(boardId, postId);
 
         int findPostHits = findPost.getHits() + 1;
-        boardService.addHits(boardName, postId, findPostHits);
+        boardService.addHits(boardId, postId, findPostHits);
         findPost.setHits(findPostHits);
 
         //post 작성자와 로그인된 멤버가 같은사람인지
@@ -90,7 +90,8 @@ public class BoardController {
         model.addAttribute("yesterdayTime", LocalDateTime.now().minus(24, ChronoUnit.HOURS));
 
         if (isLogined) {
-            boolean isPostWriter = findPost.getNickname().equals(loginedMember.getNickname());
+            boolean isPostWriter = findPost.getMemberNickname().equals(loginedMember.getNickname());
+            log.info("");
             model.addAttribute("loginedNickname", loginedMember.getNickname()); //댓글 비교시
             model.addAttribute("isPostWriter", isPostWriter);
         }
@@ -98,74 +99,74 @@ public class BoardController {
         return "viewpost";
     }
 
-    @GetMapping("/{boardName}/write")
-    public String showWritePostForm(@ModelAttribute("boardName") String boardName, Model model) {
+    @GetMapping("/{boardId}/write")
+    public String showWritePostForm(@ModelAttribute("boardId") String boardId, Model model) {
         return "writepost";
     }
 
-    @PostMapping("/{boardName}/write")
-    public String writePost(@ModelAttribute("boardName") String boardName,
+    @PostMapping("/{boardId}/write")
+    public String writePost(@ModelAttribute("boardId") String boardId,
                             @ModelAttribute("post") Post post,
                             @SessionAttribute(name = "loginMember", required = false) Member loginedMember,
                             RedirectAttributes redirectAttributes) {
-        Post savedPost = boardService.savePost(boardName, post, loginedMember);
+        Post savedPost = boardService.savePost(boardId, post, loginedMember);
         redirectAttributes.addAttribute("postId", savedPost.getId());
-        return "redirect:/board/{boardName}/{postId}";
+        return "redirect:/board/{boardId}/{postId}";
     }
 
-    @GetMapping("/{boardName}/{postId}/edit")
-    public String showEditPostForm(@ModelAttribute("boardName") String boardName,
+    @GetMapping("/{boardId}/{postId}/edit")
+    public String showEditPostForm(@ModelAttribute("boardId") String boardId,
                                    @PathVariable("postId") long postId,
                                    Model model) {
-        Post findPost = boardService.findById(boardName, postId).get();
+        Post findPost = boardService.findById(postId).get();
         model.addAttribute("post", findPost);
         return "editpost";
     }
 
-    @PostMapping("/{boardName}/{postId}/edit")
-    public String editPost(@ModelAttribute("boardName") String boardName,
+    @PostMapping("/{boardId}/{postId}/edit")
+    public String editPost(@ModelAttribute("boardId") String boardId,
                            @PathVariable("postId") long postId,
                            @Validated @ModelAttribute UpdatePostDto updateParam) {
-        boardService.updatePost(boardName, postId, updateParam);
-        return "redirect:/{boardName}/{postId}";
+        boardService.updatePost(postId, updateParam);
+        return "redirect:/board/{boardId}/{postId}";
     }
 
-    @PostMapping("/{boardName}/delete")
-    public String deletePost(@ModelAttribute("boardName") String boardName,
+    @PostMapping("/{boardId}/delete")
+    public String deletePost(@ModelAttribute("boardId") String boardId,
                              @RequestParam("postId") long postId) {
-        boardService.deleteById(boardName, postId);
-        return "redirect:/{boardName}";
+        boardService.deleteById(boardId, postId);
+        return "redirect:/board/board/{boardId}";
     }
 
-    @PostMapping("/{boardName}/{postId}/comment/write")
-    public String writeComment(@ModelAttribute("boardName") String boardName,
+    @PostMapping("/{boardId}/{postId}/comment/write")
+    public String writeComment(@ModelAttribute("boardId") String boardId,
                                @PathVariable("postId") long postId,
                                @ModelAttribute("commentContent") Comment comment,
                                @SessionAttribute(name = "loginMember", required = false) Member loginedMember,
                                Model model) {
         log.info("--------------------------------------writeComment()-------------------------------------------");
         log.info("comment content={} ", comment.getCommentContent());
-        boardService.saveComment(boardName, postId, loginedMember, comment);
-        return "redirect:/board/{boardName}/{postId}";
+        boardService.saveComment(boardId, postId, loginedMember, comment);
+        return "redirect:/board/{boardId}/{postId}";
     }
 
-    @GetMapping("/{boardName}/{postId}/comment/{commentId}/edit")
-    public String editComment(@ModelAttribute("boardName") String boardName,
+    @GetMapping("/{boardId}/{postId}/comment/{commentId}/edit")
+    public String editComment(@ModelAttribute("boardId") String boardId,
                               @PathVariable("postId") long postId,
                               @PathVariable("commentId") long commentId,
                               Model model) {
         log.info("commentId={}", commentId);
 
-        return "redirect:/board/{boardName}/{postId}";
+        return "redirect:/board/{boardId}/{postId}";
     }
 
-    @GetMapping("/{boardName}/{postId}/comment/{commentId}/delete")
-    public String deleteComment(@ModelAttribute("boardName") String boardName,
+    @GetMapping("/{boardId}/{postId}/comment/{commentId}/delete")
+    public String deleteComment(@ModelAttribute("boardId") String boardId,
                                 @PathVariable("postId") long postId,
                                 @PathVariable("commentId") long commentId,
                                 Model model) {
-        boardService.deleteCommentById(boardName, commentId);
-        return "redirect:/board/{boardName}/{postId}";
+        boardService.deleteCommentById(boardId, commentId);
+        return "redirect:/board/{boardId}/{postId}";
     }
 
     private static int getStartPage(int currentPage) {

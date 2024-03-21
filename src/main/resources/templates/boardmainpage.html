@@ -53,17 +53,17 @@
             <tr th:each="post : ${posts}">
                 <td>
                     <a href="viewpost.html"
-                       th:href="@{/board/{boardName}/{postId}(postId=${post.id},boardName=${boardName})}"
+                       th:href="@{/board/{boardId}/{postId}(postId=${post.id},boardId=${boardId})}"
                        th:text="${post.id}">1
                     </a>
                 </td>
                 <td>
                     <a href="viewpost.html"
-                       th:href="@{/board/{boardName}/{postId}(postId=${post.id},boardName=${boardName})}"
+                       th:href="@{/board/{boardId}/{postId}(postId=${post.id},boardId=${boardId})}"
                        th:text="${post.title}">제목
                     </a>
                 </td>
-                <td th:text="${post.nickname}">글쓴이</td>
+                <td th:text="${post.memberNickname}">글쓴이</td>
                 <p th:if="${post.date.isAfter(yesterdayTime)}">
                     <td th:text="${#temporals.format(post.date, 'HH:mm')}">10:50</td>
                 </p>
@@ -80,7 +80,7 @@
         <div class="col-auto" th:if="${isLogined == true}">
             <button class="btn btn-primary"
                     onclick="location.href='writepost.html'"
-                    th:onclick="|location.href='@{/board/{boardName}/write(boardName=${boardName})}'|"
+                    th:onclick="|location.href='@{/board/{boardId}/write(boardId=${boardId})}'|"
             >
                 글쓰기
             </button>
@@ -89,7 +89,7 @@
 
 
     <hr class="my-4">
-    <form th:action="@{/board/{boardName}(boardName=${boardName})}" th:object="${postSearchDto}" method="get">
+    <form th:action="@{/board/{boardId}(boardId=${boardId})}" th:object="${postSearchDto}" method="get">
         <div class="row">
             <div class="col-md-2">
                 <select id="searchType" name="searchType"
@@ -124,7 +124,7 @@
                 <!-- 이전 버튼 -->
                 <li th:if="${currentPage != 0}" class="page-item">
                     <a class="page-link"
-                       th:href="@{/board/{boardName}(boardName=${boardName},currentPage=0, sort='id')}">
+                       th:href="@{/board/{boardId}(boardId=${boardId},currentPage=0, sort='id')}">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
@@ -133,7 +133,7 @@
                 <li th:each="pageNumber : ${#numbers.sequence(startPage, endPage)}" class="page-item"
                     th:classappend="${pageNumber == currentPage + 1} ? 'active' : ''">
                     <a class="page-link"
-                       th:href="@{/board/{boardName}(boardName=${boardName},currentPage=${pageNumber - 1}, sort='id')}">
+                       th:href="@{/board/{boardId}(boardId=${boardId},currentPage=${pageNumber - 1}, sort='id')}">
                         <span th:text="${pageNumber}">1</span>
                     </a>
                 </li>
@@ -141,7 +141,7 @@
                 <!-- 다음 버튼 -->
                 <li th:if="${currentPage <= totalPages - 1}" class="page-item">
                     <a class="page-link"
-                       th:href="@{/board/{boardName}(boardName=${boardName},currentPage=${totalPages - 1}, sort='id')}">
+                       th:href="@{/board/{boardId}(boardId=${boardId},currentPage=${totalPages - 1}, sort='id')}">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>

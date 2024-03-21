@@ -1,9 +1,6 @@
 package com.example.board.service;
 
-import com.example.board.domain.board.Comment;
-import com.example.board.domain.board.Post;
-import com.example.board.domain.board.PostSearchDto;
-import com.example.board.domain.board.UpdatePostDto;
+import com.example.board.domain.board.*;
 import com.example.board.domain.member.Member;
 import com.example.board.repository.board.BoardRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,61 +20,52 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
 
-    public List<String> findBoardList() {
-        List<String> boardNameList = boardRepository.findBoardList();
-
-        String compareStr = "board_";
-
-        List<String> newboardNameList =
-                boardNameList.stream()
-                        .filter(s -> s.toLowerCase().contains(compareStr))
-                        .map(s -> s.substring(compareStr.length()))
-                        .collect(Collectors.toList());
-
-        return newboardNameList;
+    public List<Board> findBoardList() {
+        return boardRepository.findBoardList();
     }
 
-    public Post savePost(String boardName, Post post, Member loginedMember) {
+    public Post savePost(String boardId, Post post, Member loginedMember) {
         post.setHits(0);
         post.setDate(LocalDateTime.now());
-        post.setNickname(loginedMember.getNickname());
-        return boardRepository.savePost(boardName, post);
+        post.setMemberNickname(loginedMember.getNickname());
+        post.setBoardCategory(boardId);
+        return boardRepository.savePost(post);
     }
 
-    public void updatePost(String boardName, Long postId, UpdatePostDto updateParam) {
-        boardRepository.updatePost(boardName, postId, updateParam);
+    public void updatePost(Long postId, UpdatePostDto updateParam) {
+        boardRepository.updatePost(postId, updateParam);
     }
 
-    public Optional<Post> findById(String boardName, Long postId) {
-        return boardRepository.findPostById(boardName, postId);
+    public Optional<Post> findById(Long postId) {
+        return boardRepository.findPostById(postId);
     }
 
-    public List<Post> findPosts(String boardName, PostSearchDto postSearchDto) {
+    public List<Post> findPosts(String boardId, PostSearchDto postSearchDto) {
 
         List<Post> posts;
         if (postSearchDto.getSearchWord() == null) {
-            posts = boardRepository.findAllPosts(boardName);
+            posts = boardRepository.findAllPosts(boardId);
         } else {
-            posts = boardRepository.findBySearchWord(boardName, postSearchDto);
+            posts = boardRepository.findBySearchWord(boardId, postSearchDto);
         }
         Collections.reverse(posts);
         return posts;
     }
 
     public void deleteById(String boardName, Long postId) {
-        boardRepository.deletePostById(boardName, postId);
+        boardRepository.deletePostById(postId);
     }
 
 
     public void addHits(String boardName, Long postId, int hits) {
-        boardRepository.addHits(boardName, postId, hits);
+        boardRepository.addHits(postId, hits);
     }
 
     public void saveComment(String boardName, Long postId, Member loginedMember, Comment comment) {
         comment.setMemberNickname(loginedMember.getNickname());
         comment.setPostId(postId);
         comment.setDate(LocalDateTime.now());
-        boardRepository.saveComment(boardName, postId, comment);
+        boardRepository.saveComment(postId, comment);
     }
 
     public void updateComment(String boardName, Long commentId, Comment comment) {
@@ -85,11 +73,11 @@ public class BoardService {
     }
 
     public void deleteCommentById(String boardName, Long commentId) {
-        boardRepository.deleteCommentById(boardName, commentId);
+        boardRepository.deleteCommentById(commentId);
     }
 
     public List<Comment> findAllCommentsByPostId(String boardName, Long postId) {
-        List<Comment> comments = boardRepository.findAllCommentsByPostId(boardName, postId);
+        List<Comment> comments = boardRepository.findAllCommentsByPostId(postId);
         return comments;
     }
 

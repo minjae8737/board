@@ -1,5 +1,6 @@
 package com.example.board.controller;
 
+import com.example.board.domain.board.Board;
 import com.example.board.domain.member.Member;
 import com.example.board.service.BoardService;
 import jakarta.servlet.http.HttpSession;
@@ -23,7 +24,7 @@ public class MainController {
 
     @GetMapping
     public String showBoardList(@SessionAttribute(name = "loginMember", required = false) Member loginedMember, Model model) {
-        List<String> boardList = boardService.findBoardList();
+        List<Board> boardList = boardService.findBoardList();
         boolean isLogined = loginedMember != null;
 //        log.info("boardList.size()={}", boardList.size());
 
