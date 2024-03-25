@@ -68,9 +68,11 @@ public class BoardService {
         boardRepository.saveComment(postId, comment);
     }
 
-    public void updateComment(String boardName, Long commentId, Comment comment) {
-
+    public void updateComment(UpdateCommentDto updateParam) {
+        boardRepository.updateComment(updateParam);
     }
+
+
 
     public void deleteCommentById(String boardName, Long commentId) {
         boardRepository.deleteCommentById(commentId);

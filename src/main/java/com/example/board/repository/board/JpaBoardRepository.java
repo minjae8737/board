@@ -100,8 +100,9 @@ public class JpaBoardRepository implements BoardRepository {
     }
 
     @Override
-    public void updateComment(String boardId, Long commentId) {
-
+    public void updateComment(UpdateCommentDto updateParam) {
+        Comment findComment = em.find(Comment.class, updateParam.getCommentId());
+        findComment.setCommentContent(updateParam.getEditedContent());
     }
 
     @Override

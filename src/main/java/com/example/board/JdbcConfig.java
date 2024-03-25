@@ -13,7 +13,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.sql.DataSource;
 
-//@Configuration
+@Configuration
 @RequiredArgsConstructor
 public class JdbcConfig {
 

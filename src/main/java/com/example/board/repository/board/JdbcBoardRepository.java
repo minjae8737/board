@@ -167,9 +167,16 @@ public class JdbcBoardRepository implements BoardRepository {
     }
 
     @Override
-    public void updateComment(String boardId, Long commentId) {
-        String tableName = "comment_" + boardId;
+    public void updateComment(UpdateCommentDto updateParam) {
+        String sql = "update comment " +
+                "set comment_content=:commentContent " +
+                "where id=:id";
 
+        SqlParameterSource param = new MapSqlParameterSource()
+                .addValue("commentContent", updateParam.getEditedContent())
+                .addValue("id", updateParam.getCommentId());
+
+        template.update(sql, param);
     }
 
     @Override

@@ -25,7 +25,7 @@ public interface BoardRepository {
 
     public Comment saveComment(Long postId, Comment comment);
 
-    public void updateComment(String boardId, Long commentId);
+    public void updateComment(UpdateCommentDto updateParam);
 
     public void deleteCommentById(Long commentId);
 

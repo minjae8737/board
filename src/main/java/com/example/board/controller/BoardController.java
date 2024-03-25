@@ -1,9 +1,6 @@
 package com.example.board.controller;
 
-import com.example.board.domain.board.Comment;
-import com.example.board.domain.board.Post;
-import com.example.board.domain.board.PostSearchDto;
-import com.example.board.domain.board.UpdatePostDto;
+import com.example.board.domain.board.*;
 import com.example.board.domain.member.Member;
 import com.example.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -91,7 +88,6 @@ public class BoardController {
 
         if (isLogined) {
             boolean isPostWriter = findPost.getMemberNickname().equals(loginedMember.getNickname());
-            log.info("");
             model.addAttribute("loginedNickname", loginedMember.getNickname()); //댓글 비교시
             model.addAttribute("isPostWriter", isPostWriter);
         }
@@ -144,20 +140,18 @@ public class BoardController {
                                @ModelAttribute("commentContent") Comment comment,
                                @SessionAttribute(name = "loginMember", required = false) Member loginedMember,
                                Model model) {
-        log.info("--------------------------------------writeComment()-------------------------------------------");
-        log.info("comment content={} ", comment.getCommentContent());
+//        log.info("writeComment() content={} ", comment.getCommentContent());
         boardService.saveComment(boardId, postId, loginedMember, comment);
         return "redirect:/board/{boardId}/{postId}";
     }
 
-    @GetMapping("/{boardId}/{postId}/comment/{commentId}/edit")
-    public String editComment(@ModelAttribute("boardId") String boardId,
-                              @PathVariable("postId") long postId,
-                              @PathVariable("commentId") long commentId,
+    @ResponseBody
+    @RequestMapping(value = "/comment/edit", method = RequestMethod.POST)
+    public UpdateCommentDto editComment(@RequestBody UpdateCommentDto updateParam,
                               Model model) {
-        log.info("commentId={}", commentId);
-
-        return "redirect:/board/{boardId}/{postId}";
+//        log.info("editComment() updateParam={}", updateParam);
+        boardService.updateComment(updateParam);
+        return updateParam;
     }
 
     @GetMapping("/{boardId}/{postId}/comment/{commentId}/delete")
